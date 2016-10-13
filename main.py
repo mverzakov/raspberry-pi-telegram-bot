@@ -14,9 +14,9 @@ Basic Echobot example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
-import random
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import logging
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+import settings
 
 # Enable logging
 logging.basicConfig(
@@ -26,8 +26,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-# Define a few command handlers. These usually take the two arguments bot and
-# update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
     bot.sendMessage(update.message.chat_id, text='')
 
@@ -38,8 +36,12 @@ def help(bot, update):
 
 def echo(bot, update):
     message = update.message.text.lower()
-    bot.sendMessage(update.message.chat_id,
-                    text=u'')
+    if str(update.message.chat_id) not in settings.ALLOWED_IDS:
+        bot.sendMessage(update.message.chat_id,
+                        text=u'These Is Not the Bot You Are Looking For')
+    else:
+        bot.sendMessage(update.message.chat_id,
+                        text=message)
 
 
 def error(bot, update, error):
@@ -48,7 +50,7 @@ def error(bot, update, error):
 
 def main():
     # Create the EventHandler and pass it your bot's token.
-    updater = Updater("233760382:AAFaCGOpU6elGE-_wqErpzJlWSDitK75HkI")
+    updater = Updater(settings.BOT_ID)
 
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
