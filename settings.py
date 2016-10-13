@@ -1,5 +1,5 @@
 import os
 
-ALLOWED_IDS = ['174969330']
+ALLOWED_IDS = os.environ.get('ALLOWED_IDS', '').split(',')
 
-BOT_ID = os.environ['BOT_ID']
+BOT_ID = os.environ.get('BOT_ID')
