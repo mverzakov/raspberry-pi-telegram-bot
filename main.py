@@ -15,6 +15,7 @@ Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
 import logging
+from telegram import ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from decorators import access_required
 import settings
@@ -42,8 +43,17 @@ def echo(bot, update):
 
 
 @access_required
-def file_handler(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Received')
+def torrent_file_handler(bot, update):
+    document = update.message.document
+    if not document.file_name.endswith('.torrent'):
+        bot.sendMessage(update.message.chat_id,
+                        text='It\'s not a torrent file!')
+    else:
+        custom_keyboard = [settings.TORRENT_DIRS.keys()]
+        reply_markup = ReplyKeyboardMarkup(custom_keyboard)
+        bot.sendMessage(chat_id=update.message.chat_id,
+                        text="Choose content type.",
+                        reply_markup=reply_markup)
 
 
 @access_required
@@ -75,6 +85,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
 
     # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(MessageHandler([Filters.document], torrent_file_handler))
     dp.add_handler(MessageHandler([Filters.contact], contact_handler))
     dp.add_handler(MessageHandler([Filters.text], echo))
 
