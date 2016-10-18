@@ -16,6 +16,7 @@ bot.
 """
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from decorators import access_required
 import settings
 
 # Enable logging
@@ -31,17 +32,19 @@ def start(bot, update):
 
 
 def help(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Write a question - get an answer.')
+    bot.sendMessage(update.message.chat_id, text='')
 
 
+@access_required
 def echo(bot, update):
     message = update.message.text.lower()
-    if str(update.message.chat_id) not in settings.ALLOWED_IDS:
-        bot.sendMessage(update.message.chat_id,
-                        text=u'These Is Not the Bot You Are Looking For')
-    else:
-        bot.sendMessage(update.message.chat_id,
-                        text=message)
+    bot.sendMessage(update.message.chat_id, text=message)
+
+
+@access_required
+def file_handler(bot, update):
+    print update
+    bot.sendMessage(update.message.chat_id, text='Received')
 
 
 def error(bot, update, error):
