@@ -49,11 +49,14 @@ def file_handler(bot, update):
 @access_required
 def contact_handler(bot, update):
     id = update.message.contact.user_id
-    text = u'User {} {} is now able to do things.'.format(
+    if id not in settings.ALLOWED_IDS:
+        settings.ALLOWED_IDS.append(id)
+        text = u'User {} {} is now able to do things.'
+    else:
+        text = u'User {} {} already have an access to do things.'
+    bot.sendMessage(update.message.chat_id, text=text.format(
         update.message.contact.first_name,
-        update.message.contact.last_name
-    )
-    bot.sendMessage(update.message.chat_id, text=text)
+        update.message.contact.last_name))
 
 
 def error(bot, update, error):
