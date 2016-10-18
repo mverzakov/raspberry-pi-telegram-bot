@@ -43,8 +43,17 @@ def echo(bot, update):
 
 @access_required
 def file_handler(bot, update):
-    print update
     bot.sendMessage(update.message.chat_id, text='Received')
+
+
+@access_required
+def contact_handler(bot, update):
+    id = update.message.contact.user_id
+    text = u'User {} {} is now able to do things.'.format(
+        update.message.contact.first_name,
+        update.message.contact.last_name
+    )
+    bot.sendMessage(update.message.chat_id, text=text)
 
 
 def error(bot, update, error):
@@ -63,7 +72,9 @@ def main():
     dp.add_handler(CommandHandler("help", help))
 
     # on noncommand i.e message - echo the message on Telegram
+    dp.add_handler(MessageHandler([Filters.contact], contact_handler))
     dp.add_handler(MessageHandler([Filters.text], echo))
+
 
     # log all errors
     dp.add_error_handler(error)
