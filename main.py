@@ -14,11 +14,15 @@ Basic Echobot example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
+import os
 import logging
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardHide
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
+
+from torrent.transmission import TransmissionConnector
 from decorators import access_required
+
 import settings
 
 # Enable logging
@@ -27,6 +31,9 @@ logging.basicConfig(
     level=logging.INFO)
 
 logger = logging.getLogger(__name__)
+
+# Enable torrent
+torrent = TransmissionConnector()
 
 
 def start(bot, update):
@@ -57,6 +64,12 @@ def torrent_file_handler(bot, update):
         reply_markup = ReplyKeyboardMarkup(custom_keyboard,
                                            one_time_keyboard=True)
         logger.info('File ID {}'.format(document.file_id))
+        if not os.path.exists(settings.TORRENTS_DIR):
+            os.makedirs(settings.TORRENTS_DIR)
+        newFile = bot.getFile(document.file_id)
+        newFile.download(
+            os.path.join(settings.TORRENTS_DIR, document.file_name)
+        )
         bot.sendMessage(chat_id=update.message.chat_id,
                         text='Choose content type.',
                         reply_markup=reply_markup)
