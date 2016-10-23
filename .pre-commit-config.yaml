@@ -1,0 +1,21 @@
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    sha: 97b88d9610bcc03982ddac33caba98bb2b751f5f
+    hooks:
+    -   id: check-ast
+    -   id: check-added-large-files
+    -   id: check-case-conflict
+    -   id: check-docstring-first
+    -   id: check-merge-conflict
+    -   id: check-yaml
+    -   id: debug-statements
+    -   id: detect-private-key
+    -   id: double-quote-string-fixer
+    -   id: fix-encoding-pragma
+    -   id: trailing-whitespace
+    -   id: autopep8-wrapper
+    -   id: name-tests-test
+    -   id: end-of-file-fixer
+-   repo: https://github.com/pre-commit/pre-commit
+    sha: 139744582b1c8425d73f11a5896a4865dee84c5f
+    hooks:
+    -   id: validate_config

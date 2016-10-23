@@ -16,14 +16,15 @@ bot.
 """
 import logging
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardHide
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler
+from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
+                          ConversationHandler)
 from decorators import access_required
 import settings
 
 # Enable logging
 logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        level=logging.INFO)
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +41,8 @@ def help(bot, update):
 def echo(bot, update):
     message = update.message.text.lower()
     reply_markup = ReplyKeyboardHide()
-    bot.sendMessage(update.message.chat_id, text=message, reply_markup=reply_markup)
+    bot.sendMessage(update.message.chat_id, text=message,
+                    reply_markup=reply_markup)
 
 
 @access_required
@@ -54,24 +56,25 @@ def torrent_file_handler(bot, update):
         custom_keyboard = [settings.TORRENT_DIRS.keys()]
         reply_markup = ReplyKeyboardMarkup(custom_keyboard,
                                            one_time_keyboard=True)
-        logger.info("File ID {}".format(document.file_id))
+        logger.info('File ID {}'.format(document.file_id))
         bot.sendMessage(chat_id=update.message.chat_id,
-                        text="Choose content type.",
+                        text='Choose content type.',
                         reply_markup=reply_markup)
 
         return 0
 
+
 @access_required
 def torrent_file_path(bot, update):
     path_key = update.message.text
-    logger.info("File ID {}".format(settings.TORRENT_DIRS.get(path_key)))
+    logger.info('File ID {}'.format(settings.TORRENT_DIRS.get(path_key)))
     return ConversationHandler.END
 
 
 @access_required
 def cancel(bot, update):
     user = update.message.from_user
-    logger.info("User %s canceled the conversation." % user.first_name)
+    logger.info('User %s canceled the conversation.' % user.first_name)
     update.message.reply_text('Bye! I hope we can talk again some day.')
     return ConversationHandler.END
 
@@ -101,12 +104,13 @@ def main():
     dp = updater.dispatcher
 
     # on different commands - answer in Telegram
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("help", help))
+    dp.add_handler(CommandHandler('start', start))
+    dp.add_handler(CommandHandler('help', help))
 
     # on noncommand i.e message - echo the message on Telegram
     conv_handler = ConversationHandler(
-        entry_points=[MessageHandler([Filters.document], torrent_file_handler)],
+        entry_points=[MessageHandler([Filters.document],
+                                     torrent_file_handler)],
 
         states={
             0: [MessageHandler([Filters.text], torrent_file_path)],
@@ -118,7 +122,6 @@ def main():
     dp.add_handler(conv_handler)
     dp.add_handler(MessageHandler([Filters.contact], contact_handler))
     dp.add_handler(MessageHandler([Filters.text], echo))
-
 
     # log all errors
     dp.add_error_handler(error)
