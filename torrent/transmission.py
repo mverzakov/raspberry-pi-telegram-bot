@@ -23,6 +23,8 @@ class TransmissionConnector(BaseTorrentConnector):
 
     def add_torrent(self, path_to_file, path_to_dir=None):
         params = ['-a {}'.format(path_to_file)]
+        if path_to_dir:
+            params.append('-w {}'.format(path_to_dir))
         return self.run_cmd(params)
 
     def torrents_list(self):
