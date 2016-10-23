@@ -35,6 +35,8 @@ logger = logging.getLogger(__name__)
 # Enable torrent
 torrent = TransmissionConnector()
 
+conversation = {}
+
 
 def start(bot, update):
     bot.sendMessage(update.message.chat_id, text='')
@@ -67,13 +69,12 @@ def torrent_file_handler(bot, update):
         if not os.path.exists(settings.TORRENTS_DIR):
             os.makedirs(settings.TORRENTS_DIR)
         newFile = bot.getFile(document.file_id)
-        newFile.download(
-            os.path.join(settings.TORRENTS_DIR, document.file_name)
-        )
+        path = os.path.join(settings.TORRENTS_DIR, document.file_name)
+        newFile.download(path)
+        conversation[update.message.chat_id] = path
         bot.sendMessage(chat_id=update.message.chat_id,
                         text='Choose content type.',
                         reply_markup=reply_markup)
-
         return 0
 
 
@@ -81,6 +82,9 @@ def torrent_file_handler(bot, update):
 def torrent_file_path(bot, update):
     path_key = update.message.text
     logger.info('File ID {}'.format(settings.TORRENT_DIRS.get(path_key)))
+    path = conversation[update.message.chat_id]
+    result = torrent.add_torrent(path, path_key)
+    bot.sendMessage(chat_id=update.message.chat_id, text=result)
     return ConversationHandler.END
 
 
