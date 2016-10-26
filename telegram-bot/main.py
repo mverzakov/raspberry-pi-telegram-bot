@@ -14,16 +14,16 @@ Basic Echobot example, repeats messages.
 Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
-import os
 import logging
+import os
+
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardHide
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
                           ConversationHandler)
 
-from torrent.transmission import TransmissionConnector
-from decorators import access_required
-
 import settings
+from decorators import access_required
+from torrent.transmission import TransmissionConnector
 
 # Enable logging
 logging.basicConfig(
