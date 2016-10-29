@@ -1,0 +1,14 @@
+version: "2"
+
+services:
+  telegram-bot:
+    build: telegram-bot
+    environment:
+      BOT_ID: "233760382:AAFaCGOpU6elGE-_wqErpzJlWSDitK75HkI"
+      ALLOWED_IDS: "174969330"
+
+  transmission:
+    build: transmission
+    hostname: transmission
+    ports:
+      - "9091:80"
