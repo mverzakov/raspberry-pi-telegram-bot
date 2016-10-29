@@ -6,9 +6,10 @@ from .base import BaseTorrentConnector
 class TransmissionConnector(BaseTorrentConnector):
     """Class is to interract with transmission torrent interface."""
 
-    cmd = 'transmission-remote'
+    cmd = 'transmission-remote transmission:9091'
 
-    def __init__(self, user='transmission', password='transmission'):
+    def __init__(self, user='transmission', password='transmission',
+                 host=None, port=None):
         self.auth_cmd = '-n {}:{}'.format(user, password)
 
     def run_cmd(self, params=[]):
@@ -23,8 +24,8 @@ class TransmissionConnector(BaseTorrentConnector):
 
     def add_torrent(self, path_to_file, path_to_dir=None):
         params = ['-a {}'.format(path_to_file)]
-        if path_to_dir:
-            params.append('-w {}'.format(path_to_dir))
+        # if path_to_dir:
+        #     params.append('-w {}'.format(path_to_dir))
         return self.run_cmd(params)
 
     def torrents_list(self):

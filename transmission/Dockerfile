@@ -7,6 +7,9 @@ RUN apk --no-cache --update add bash transmission-daemon \
 
 ADD . .
 
+RUN mkdir /etc/transmission-daemon \
+    && cp conf/settings.json /etc/transmission-daemon/settings.json
+
 EXPOSE 9091 51413/tcp 51413/udp
 
 CMD sh docker-entrypoint.sh
