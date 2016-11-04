@@ -1,48 +1,31 @@
 # -*- coding: utf-8 -*-
-import subprocess
+import transmissionrpc
+
 from .base import BaseTorrentConnector
 
 
 class TransmissionConnector(BaseTorrentConnector):
     """Class is to interract with transmission torrent interface."""
 
-    cmd = 'transmission-remote transmission:9091'
-
-    def __init__(self, user='transmission', password='transmission',
-                 host=None, port=None):
-        self.auth_cmd = '-n {}:{}'.format(user, password)
-
-    def run_cmd(self, params=[]):
-        """Run torrent command."""
-        command = [self.cmd, self.auth_cmd]
-        command.extend(params)
-        command = ' '.join(command)
-        output = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
-                                  stderr=subprocess.STDOUT)
-        output = output.stdout.read().decode('utf-8')
-        return '{0}'.format(output)
+    def __init__(self, host='localhost', port=9091):
+        self.client = transmissionrpc.Client(host, port=port)
 
     def add_torrent(self, path_to_file, path_to_dir=None):
-        params = ['-a {}'.format(path_to_file)]
-        # if path_to_dir:
-        #     params.append('-w {}'.format(path_to_dir))
-        return self.run_cmd(params)
+        return self.add_torrent(path_to_file, paused=True)
 
     def torrents_list(self):
-        """Return list of torrents."""
-        return self.run_cmd(['-l'])
+        """Return list of torrents."""i
+        attrs=('id', 'name', 'status', 'percentDone', 'eta')
+        return self.client.get_torrents(arguments=attrs)
 
     def start(self, index):
         """Start specific torrents."""
-        params = ['-t {}'.format(index), '-s']
-        return self.run_cmd(params)
+        return self.client.start_torrent(index)
 
     def stop(self, index):
         """Stop specific torrents."""
-        params = ['-t {}'.format(index), '-S']
-        return self.run_cmd(params)
+        return self.stop_torrent(index)
 
-    def remove(self, index=None):
+    def remove(self, index):
         """Remove specific torrents."""
-        params = ['-t {}'.format(index), '-r']
-        return self.run_cmd(params)
+        return self.remove_torrent(index, delete_data=True)
