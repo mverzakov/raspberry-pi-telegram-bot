@@ -2,7 +2,7 @@ FROM hypriot/rpi-alpine-scratch
 
 MAINTAINER Maxim Verzakov [maxim.verzakov@gmail.com]
 
-RUN apk --no-cache --update add bash transmission-daemon \
+RUN apk --update add bash transmission-daemon \
     && rm -rf /var/cache/apk/*
 
 ADD . .
