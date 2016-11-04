@@ -1,4 +1,4 @@
-FROM alpine:latest
+FROM hypriot/rpi-alpine-scratch
 
 MAINTAINER Maxim Verzakov [maxim.verzakov@gmail.com]
 
